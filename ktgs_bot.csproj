@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Тип выходного файла: Exe = консольное приложение -->
+    <OutputType>Exe</OutputType>
+    <!-- Целевая платформа .NET -->
+    <TargetFramework>net10.0</TargetFramework>
+    <!-- Автоматически подключает стандартные using-директивы (System, System.Linq и др.) -->
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Включает проверку nullable-ссылок на этапе компиляции -->
+    <Nullable>enable</Nullable>
+    <!-- Версия приложения — читается в Program.cs через рефлексию (Assembly.GetName().Version) -->
+    <Version>1.0.9</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Драйвер PostgreSQL для .NET — нужен Dapper-у для подключения к БД -->
+    <PackageReference Include="Npgsql" Version="10.0.3" />
+
+    <!-- Microsoft.Extensions.Hosting / Generic Host: DI-контейнер, IHostedService -->
+    <!--   чтение appsettings.json -->
+    <!--   https://www.nuget.org/packages/Microsoft.Extensions.Hosting/9.0.16 -->
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.*" />
+
+	  <PackageReference Include="Dapper" Version="2.1.35" />
+  </ItemGroup>
+
+  <!-- Команда сохранить файлы конфигурации в папку поставки: копируются в папку сборки (bin/) при каждом билде -->
+  <ItemGroup>
+    <!-- Конфиг с секретами -->
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+              
+    <None Update="appsettings.example.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>   
+  </ItemGroup>
+
+</Project>
