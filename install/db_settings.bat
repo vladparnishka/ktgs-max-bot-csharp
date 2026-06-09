@@ -1,7 +1,7 @@
 @rem Имена БД и файлов бэкапа для скриптов install/
 
 @rem PG_DUMP_PATH - Установить, если команды pg_dump, createdb не видны в CMD
-set PG_DUMP_PATH="C:\Program Files\PostgreSQL\18\bin\"
+@set PG_DUMP_PATH="C:\Program Files\PostgreSQL\18\bin\"
 
 @rem DB_SUPER_USER - пользователь владелец БД PostgreSQL
 set DB_SUPER_USER=postgres

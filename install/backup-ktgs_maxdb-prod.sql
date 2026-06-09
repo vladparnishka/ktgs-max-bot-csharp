@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict HgxJj2Xhjuuj4mYJbgBrFWSibyR6T8aO3dywFQHlXbymOOIrtkX1nISvBlxGVjY
+\restrict VsSaoF1lshMliVDAnzykuEON1r1usW7SKbsT8G3RhgXHLJathTR9ASjHAEXWcgV
 
 -- Dumped from database version 18.4
 -- Dumped by pg_dump version 18.4
@@ -109,6 +109,13 @@ CREATE TABLE public.basic_education (
 ALTER TABLE public.basic_education OWNER TO postgres;
 
 --
+-- Name: TABLE basic_education; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON TABLE public.basic_education IS 'Периоды обучения';
+
+
+--
 -- Name: basic_education__filling_in_data_for_specializations; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -120,6 +127,13 @@ CREATE TABLE public.basic_education__filling_in_data_for_specializations (
 
 
 ALTER TABLE public.basic_education__filling_in_data_for_specializations OWNER TO postgres;
+
+--
+-- Name: TABLE basic_education__filling_in_data_for_specializations; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON TABLE public.basic_education__filling_in_data_for_specializations IS 'Периоды обучения для специальностей';
+
 
 --
 -- Name: basic_education__filling_in_data_for_specializations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -214,6 +228,84 @@ ALTER SEQUENCE public.college_branches_id_seq OWNED BY public.college_branches.i
 
 
 --
+-- Name: education_loan_content; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.education_loan_content (
+    id integer NOT NULL,
+    specialty_id integer,
+    content text NOT NULL
+);
+
+
+ALTER TABLE public.education_loan_content OWNER TO postgres;
+
+--
+-- Name: TABLE education_loan_content; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON TABLE public.education_loan_content IS 'Условия образовательного кредита';
+
+
+--
+-- Name: education_loan_content_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.education_loan_content_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.education_loan_content_id_seq OWNER TO postgres;
+
+--
+-- Name: education_loan_content_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.education_loan_content_id_seq OWNED BY public.education_loan_content.id;
+
+
+--
+-- Name: education_loan_media; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.education_loan_media (
+    id integer NOT NULL,
+    loan_content_id integer,
+    file_url text NOT NULL,
+    "position" integer
+);
+
+
+ALTER TABLE public.education_loan_media OWNER TO postgres;
+
+--
+-- Name: education_loan_media_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.education_loan_media_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.education_loan_media_id_seq OWNER TO postgres;
+
+--
+-- Name: education_loan_media_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.education_loan_media_id_seq OWNED BY public.education_loan_media.id;
+
+
+--
 -- Name: filling_in_data_for_specializations; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -226,6 +318,13 @@ CREATE TABLE public.filling_in_data_for_specializations (
 
 
 ALTER TABLE public.filling_in_data_for_specializations OWNER TO postgres;
+
+--
+-- Name: TABLE filling_in_data_for_specializations; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON TABLE public.filling_in_data_for_specializations IS 'Карточка специальности';
+
 
 --
 -- Name: filling_in_data_for_specializations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -334,6 +433,13 @@ CREATE TABLE public.specialties_list (
 ALTER TABLE public.specialties_list OWNER TO postgres;
 
 --
+-- Name: TABLE specialties_list; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON TABLE public.specialties_list IS 'Специальности';
+
+
+--
 -- Name: specialties_list_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -356,6 +462,42 @@ ALTER SEQUENCE public.specialties_list_id_seq OWNED BY public.specialties_list.i
 
 
 --
+-- Name: target_education_media; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.target_education_media (
+    id integer NOT NULL,
+    admission_id integer,
+    file_path text NOT NULL,
+    display_order integer
+);
+
+
+ALTER TABLE public.target_education_media OWNER TO postgres;
+
+--
+-- Name: target_education_media_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.target_education_media_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.target_education_media_id_seq OWNER TO postgres;
+
+--
+-- Name: target_education_media_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.target_education_media_id_seq OWNED BY public.target_education_media.id;
+
+
+--
 -- Name: transfer_page_content; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -369,6 +511,13 @@ CREATE TABLE public.transfer_page_content (
 
 
 ALTER TABLE public.transfer_page_content OWNER TO postgres;
+
+--
+-- Name: TABLE transfer_page_content; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON TABLE public.transfer_page_content IS 'Условия перевода из другого учебного заведению';
+
 
 --
 -- Name: transfer_page_content_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -462,6 +611,20 @@ ALTER TABLE ONLY public.college_branches ALTER COLUMN id SET DEFAULT nextval('pu
 
 
 --
+-- Name: education_loan_content id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.education_loan_content ALTER COLUMN id SET DEFAULT nextval('public.education_loan_content_id_seq'::regclass);
+
+
+--
+-- Name: education_loan_media id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.education_loan_media ALTER COLUMN id SET DEFAULT nextval('public.education_loan_media_id_seq'::regclass);
+
+
+--
 -- Name: filling_in_data_for_specializations id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -487,6 +650,13 @@ ALTER TABLE ONLY public.open_door_time ALTER COLUMN id SET DEFAULT nextval('publ
 --
 
 ALTER TABLE ONLY public.specialties_list ALTER COLUMN id SET DEFAULT nextval('public.specialties_list_id_seq'::regclass);
+
+
+--
+-- Name: target_education_media id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.target_education_media ALTER COLUMN id SET DEFAULT nextval('public.target_education_media_id_seq'::regclass);
 
 
 --
@@ -626,8 +796,25 @@ COPY public.college_branches (id, branch_name, adress, metro_station) FROM stdin
 2	Отделение гостиничного сервиса	Пр. Энгельса, д. 42	Удельная
 3	Отделение ресторанного сервиса	Наб. Обводного кан., 154-а	Нарвская
 4	Отделение общеобразовательной подготовки и Отделение прикладных программ и цифровых технологий	Пр. Луначарского, д. 66, корп. 1	Озерки
-5	Отделение туризма и прикладных технологий2222	\N	\N
-6	Отделение туризма и прикладных технологий2222	\N	ччч
+\.
+
+
+--
+-- Data for Name: education_loan_content; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.education_loan_content (id, specialty_id, content) FROM stdin;
+1	\N	В нашей стремительно меняющейся экономике среднее профессиональное образование открывает перед молодыми людьми двери в мир высокооплачиваемого и квалифицированного труда. При этом с каждым годом колледжи и техникумы все более востребованы у абитуриентов. Но что делать, если бюджетного места не хватило, а финансовые обстоятельства становятся препятствием на пути к получению желаемого образования? Решением этой проблемы может стать использование образовательного кредита с государственной поддержкой.\r\n\r\nПодробную информацию об условиях программы вы можете изучить в специальном пособии, а также в разделе [«Вопросы и ответы»](https://open.edu.gov.ru/faq/#type=73) на сайте Минпросвещения России.\r\n\r\n**Условия предоставления**\r\nОбразовательный кредит может получить любой гражданин Российской Федерации. При этом, потенциальному заемщику должно быть не меньше 14 лет. Чтобы воспользоваться государственной поддержкой необходимо:\r\n\r\n1. Подписать договор на платное обучение с колледжем;\r\n2. Прийти с паспортом, договором и счетом на оплату в офис банков-партнеров (ПАО Сбербанк или РНКБ Банк);\r\n3. Ознакомиться с условиями кредита и подпиисать договор;\r\n4. Получить подтверждение от учебного заведения. Пошаговая инструкция в [чек-листе](https://vk.com/doc-224704750_675251199).\r\n\r\n**Материалы для студентов и абитуриентов**\r\n* Образовательное кредитование: [пособие для студентов СПО](https://vk.com/doc-224704750_675216781);\r\n* [Чек-лист](https://vk.com/doc-224704750_675251199) о получении кредита на образование по программе СПО с господдержкой.
+\.
+
+
+--
+-- Data for Name: education_loan_media; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.education_loan_media (id, loan_content_id, file_url, "position") FROM stdin;
+1	1	https://www.ktgs.ru/upload/medialibrary/7cf/2024-05-20_12-24-23.png	1
+2	1	https://www.ktgs.ru/upload/medialibrary/6d5/Informatsionny_plakat_Prichiny_izmenenia_dogovora_po_obrkreditu_page-0001.jpg	2
 \.
 
 
@@ -759,7 +946,7 @@ COPY public.filling_in_data_for_specializations (id, specialty_id, content_type,
 --
 
 COPY public.information_stat (id, specialty_id, title, content) FROM stdin;
-1	1	Прием иностранных граждан	Приём иностранных граждан в Колледж туризма и прикладных технологий Санкт-Петербурга осуществляется на основании действующих Правил приёма в Колледж туризма и прикладных технологий Санкт-Петербурга и Федерального закона от 24 мая 1999 № 99-ФЗ «О государственной политике Российской Федерации в отношении соотечественников за рубежом».\r\n\r\nДокументы, необходимые для иностранных граждан\r\n\r\n\r\nДокумент об образовании (аттестат за 9 или 11 класс, диплом об окончании техникума (училища, колледжа), вуза)\r\nНотариально заверенная ксерокопия документа об образовании при необходимости со свидетельством его эквивалентности и с переводом на русский язык.\r\nКсерокопия паспорта (все страницы)\r\nКсерокопия нотариально заверенного перевода паспорта (все страницы).\r\nКопия документа, подтверждающую регистрацию иностранного гражданина на территории Санкт-Петербурга или Ленинградской области.\r\nЦветные фотографии (3*4 см) 4 шт. без уголка\r\nКсерокопия СНИЛС\r\nМедицинские документы (предоставляются при зачислении до 25.08.2025):\r\nсправка ф-086-у за текущий год (включая отметку стоматолога, окулиста и лор-врача, а также клинические анализы крови и мочи)\r\nксерокопия сертификата о прививках\r\nсправка от нарколога; справки из туберкулезного, психоневрологического и кожно-венерологического диспансеров\r\nксерокопия медицинского страхового полиса (с двух сторон)\r\nданные о ФЛГ (флюорографии) обследовании за текущий год\r\nрезультат лабораторного исследования материала на COVID-19 методом полимеразной цепной реакции (ПЦР), отобранного не позднее 72 часов\r\nДокументы подтверждающих прохождение медицинского освидетельствования, обязательной государственной дактилоскопической регистрации и фотографирования.
+1	1	Прием иностранных граждан	Приём иностранных граждан в Колледж туризма и прикладных технологий Санкт-Петербурга осуществляется на основании действующих \r\nПравил приёма в Колледж туризма и прикладных технологий Санкт-Петербурга и Федерального закона от 24 мая 1999 № 99-ФЗ «О государственной политике Российской Федерации в отношении соотечественников за рубежом».\r\n\r\nДокументы, необходимые для иностранных граждан\r\n\r\n1. Документ об образовании (аттестат за 9 или 11 класс, диплом об окончании техникума (училища, колледжа), вуза)\r\n2. Нотариально заверенная ксерокопия документа об образовании при необходимости со свидетельством его эквивалентности и с переводом на русский язык.\r\n3. Ксерокопия паспорта (все страницы)\r\n4. Ксерокопия нотариально заверенного перевода паспорта (все страницы).\r\n5. Копия документа, подтверждающую регистрацию иностранного гражданина на территории Санкт-Петербурга или Ленинградской области.\r\n6. Цветные фотографии (3*4 см) 4 шт. без уголка\r\n7. Ксерокопия СНИЛС\r\n8. Медицинские документы (предоставляются при зачислении до 25.08.2025):\r\n\t• справка ф-086-у за текущий год (включая отметку стоматолога, окулиста и лор-врача, а также клинические анализы крови и мочи)\r\n\t• ксерокопия сертификата о прививках\r\n\t• справка от нарколога; справки из туберкулезного, психоневрологического и кожно-венерологического диспансеров\r\n\t• ксерокопия медицинского страхового полиса (с двух сторон)\r\n\t• данные о ФЛГ (флюорографии) обследовании за текущий год\r\n\t• результат лабораторного исследования материала на COVID-19 методом полимеразной цепной реакции (ПЦР), отобранного не позднее 72 часов\r\n9. Документы подтверждающих прохождение медицинского освидетельствования, обязательной государственной дактилоскопической регистрации и фотографирования.
 2	1	Сотрудничество с ВУЗами	В нашем Колледже с 1994 года успешно реализуется программа непрерывного образования по системе: Колледж – ВУЗ. Абитуриенты с соответствующим набором ЕГЭ, прошедшие по конкурсу аттестатов учатся в Колледже бесплатно и могут поступить на параллельное обучение по профильной специальности (заочно) в Санкт-Петербургский институт гостеприимства (СПИГ). Направление обучения в ВУЗе зависит от набора соответствующих предметов ЕГЭ.\r\n\r\nПо окончании обучения в Колледже остаток срока обучения в ВУЗе составляет 2-3 года с сохранением скидок по оплате за обучение. Преимущества параллельного обучения – за 5 лет место работы и два образования.
 \.
 
@@ -805,14 +992,23 @@ COPY public.specialties_list (id, cod, title) FROM stdin;
 
 
 --
+-- Data for Name: target_education_media; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.target_education_media (id, admission_id, file_path, display_order) FROM stdin;
+1	1	https://www.ktgs.ru/upload/2025/img/2025/05-2025/celevoe-obuchenie/1.png	1
+2	1	https://www.ktgs.ru/upload/2025/img/2025/05-2025/celevoe-obuchenie/2.jpg	2
+3	1	https://www.ktgs.ru/upload/2025/img/2025/05-2025/celevoe-obuchenie/3.jpg	3
+4	1	https://www.ktgs.ru/upload/2025/img/2025/05-2025/celevoe-obuchenie/4.jpg	4
+\.
+
+
+--
 -- Data for Name: transfer_page_content; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.transfer_page_content (id, specialty_id, top_content, middle_text, bottom_content) FROM stdin;
 2	\N	По состоянию на 01.05.2026 вакантных мест для перевода на второй и последующие курсы в 2025/2026 учебном году НЕТ.\r\n\r\nКонкурс для перевода на второй и последующие курсы в 2026/2027 учебном году откроется с 10 августа 2026 года.\r\n\r\nКонтактные данные для уточнения информации по переводу из других образовательных учреждений: 8 (812) 252-05-61 (Учебная часть)\r\n\r\nОбучающийся вправе перевестись из организации, осуществляющей образовательную деятельность, в Колледж, а также из Колледжа в иную организацию, осуществляющую образовательную деятельность.\r\n\r\n• Перевод обучающегося может осуществляться на те же специальности, уровень СПО и форму обучения, по которым обучается в Колледже или организации, осуществляющей образовательную деятельность.\r\n\r\nПри переводе обучающегося в Колледж на места, финансируемые за счет средств бюджета СПб, для освоения ОПОП СПО, общая продолжительность обучения не должна превышать более 1 года.\r\n\r\n• Перевод обучающихся осуществляется на ([вакантные места для приема (перевода) обучающихся](http://ktgs.ru/about/VakantnyeMesta/)) на соответствующем курсе по специальности, уровню среднего профессионального образования (базовый, повышенный) и форме обучения, на которые обучающийся хочет перейти.\r\n\r\nПеревод обучающегося осуществляется в соответствии с итогами прохождения аттестации. Процедура перевода проводится путем рассмотрения копии зачетной книжки и/или академической справки и собеседования.\r\n\r\n• Заведующий отделением определяет разницу в учебных планах;\r\n• Допустимая разница в часах может составлять не более 10% учебного времени.	Абитуриент, претендующий на перевод на обучение в Колледж с копией зачетной книжки и/или академической справкой должен обратиться к руководителю отделения, на которое он переводится или в учебную часть Колледжа	Учебная часть Колледжа расположена по адресу: СПб, Наб. Обводного канала, д. 154-а, 3 этаж; телефон: 252-0561; E-mail: ubtk@mail.ru\r\n\r\nПосле установления разницы в учебных планах, абитуриент должен представить на Комиссии следующие документы:\r\n\r\n• копию зачетной книжки, заверенную исходной образовательной организацией;\r\n• академическую справку, заверенную исходной образовательной организацией;\r\n• копии аккредитации и лицензии, заверенные исходной образовательной организацией;\r\n• другие документы могут быть представлены абитуриентом, если он претендует на льготы, установленные законодательством Российской Федерации, или затребованы от поступающего при наличии ограничений на обучение по специальностям среднего профессионального образования, установленных законодательством Российской Федерации.
-3	1	123	z	\N
-4	\N	sss	\N	\N
-5	1	asdasd	\N	sdas
 \.
 
 
@@ -868,6 +1064,20 @@ SELECT pg_catalog.setval('public.college_branches_id_seq', 6, true);
 
 
 --
+-- Name: education_loan_content_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.education_loan_content_id_seq', 1, true);
+
+
+--
+-- Name: education_loan_media_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.education_loan_media_id_seq', 2, true);
+
+
+--
 -- Name: filling_in_data_for_specializations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -893,6 +1103,13 @@ SELECT pg_catalog.setval('public.open_door_time_id_seq', 9, true);
 --
 
 SELECT pg_catalog.setval('public.specialties_list_id_seq', 3, true);
+
+
+--
+-- Name: target_education_media_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.target_education_media_id_seq', 4, true);
 
 
 --
@@ -958,6 +1175,22 @@ ALTER TABLE ONLY public.college_branches
 
 
 --
+-- Name: education_loan_content education_loan_content_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.education_loan_content
+    ADD CONSTRAINT education_loan_content_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: education_loan_media education_loan_media_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.education_loan_media
+    ADD CONSTRAINT education_loan_media_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: filling_in_data_for_specializations filling_in_data_for_specializations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -987,6 +1220,14 @@ ALTER TABLE ONLY public.open_door_time
 
 ALTER TABLE ONLY public.specialties_list
     ADD CONSTRAINT specialties_list_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: target_education_media target_education_media_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.target_education_media
+    ADD CONSTRAINT target_education_media_pkey PRIMARY KEY (id);
 
 
 --
@@ -1030,6 +1271,14 @@ ALTER TABLE ONLY public.basic_education__filling_in_data_for_specializations
 
 
 --
+-- Name: basic_education__filling_in_data_for_specializations basic_education__filling_in_data_for_spec_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.basic_education__filling_in_data_for_specializations
+    ADD CONSTRAINT basic_education__filling_in_data_for_spec_id_fkey FOREIGN KEY (specialization_id) REFERENCES public.specialties_list(id);
+
+
+--
 -- Name: branch_schedule branch_schedule_branch_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1046,6 +1295,22 @@ ALTER TABLE ONLY public.branch_schedule
 
 
 --
+-- Name: education_loan_content education_loan_content_specialty_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.education_loan_content
+    ADD CONSTRAINT education_loan_content_specialty_id_fkey FOREIGN KEY (specialty_id) REFERENCES public.specialties_list(id);
+
+
+--
+-- Name: education_loan_media education_loan_media_loan_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.education_loan_media
+    ADD CONSTRAINT education_loan_media_loan_content_id_fkey FOREIGN KEY (loan_content_id) REFERENCES public.education_loan_content(id) ON DELETE CASCADE;
+
+
+--
 -- Name: filling_in_data_for_specializations filling_in_data_for_specializations_content_type_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1054,11 +1319,27 @@ ALTER TABLE ONLY public.filling_in_data_for_specializations
 
 
 --
+-- Name: filling_in_data_for_specializations filling_in_data_for_specializations_spec_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.filling_in_data_for_specializations
+    ADD CONSTRAINT filling_in_data_for_specializations_spec_id_fkey FOREIGN KEY (specialty_id) REFERENCES public.specialties_list(id);
+
+
+--
 -- Name: information_stat information_stat_specialty_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.information_stat
     ADD CONSTRAINT information_stat_specialty_id_fkey FOREIGN KEY (specialty_id) REFERENCES public.admission_info(id);
+
+
+--
+-- Name: target_education_media target_education_media_admission_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.target_education_media
+    ADD CONSTRAINT target_education_media_admission_id_fkey FOREIGN KEY (admission_id) REFERENCES public.admission_info(id);
 
 
 --
@@ -1073,5 +1354,5 @@ ALTER TABLE ONLY public.transfer_page_content
 -- PostgreSQL database dump complete
 --
 
-\unrestrict HgxJj2Xhjuuj4mYJbgBrFWSibyR6T8aO3dywFQHlXbymOOIrtkX1nISvBlxGVjY
+\unrestrict VsSaoF1lshMliVDAnzykuEON1r1usW7SKbsT8G3RhgXHLJathTR9ASjHAEXWcgV
 
