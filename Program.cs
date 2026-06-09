@@ -41,63 +41,81 @@ class Program
         // Бот запускается в любом случае — кнопки с данными просто вернут ошибку.
         await CheckDatabaseAsync(connectionString);
 
-        try
-        {
+        // try
+        // {
             // Соединение с базой данных
             // TODO Позже соединение будет не постоянное, а открываться 
             //   при каждом запросе к БД и закрываться после него
             //  (или использовать пул соединений)
 
-            await using var connection = new NpgsqlConnection(connectionString);
-            await connection.OpenAsync();
+            // await using var connection = new NpgsqlConnection(connectionString);
+            // await connection.OpenAsync();
             // Console.WriteLine("Соединение с базой данных установлено!");
 
             // Вывод данных 
 
-            Console.WriteLine($"------------------------------------------------------------");
-            // Показать дни открытых дверей
-            var filterDay = new DateTime(DateTime.Now.Year, 1, 1); // Начало текущего года
-            // Console.WriteLine($"filterDay - {filterDay}"); // Для отладки
-            await Show_Open_Door_Time_Async(connection, filterDay);
+            // Console.WriteLine($"------------------------------------------------------------");
+            // // Показать дни открытых дверей
+            // var filterDay = new DateTime(DateTime.Now.Year, 1, 1); // Начало текущего года
+            // // Console.WriteLine($"filterDay - {filterDay}"); // Для отладки
+            // await Show_Open_Door_Time_Async(connection, filterDay);
 
 
-            Console.WriteLine($"------------------------------------------------------------");
-            // Учебные корпуса
-            await Show_COLLEGE_BRANCHES_Async(connection);
+            // Console.WriteLine($"------------------------------------------------------------");
+            // // Учебные корпуса
+            // await Show_COLLEGE_BRANCHES_Async(connection);
 
-            Console.WriteLine($"------------------------------------------------------------");
-            // Часто задаваемые вопросы
-            var faq_limit = 5;
-            var admission_id = 1;
-            await Show_ADMISSION_FAQ_Async(connection, admission_id, faq_limit);
+            // Console.WriteLine($"------------------------------------------------------------");
+            // // Часто задаваемые вопросы
+            // var faq_limit = 27;
+            // var admission_id = 1;
+            // await Show_ADMISSION_FAQ_Async(connection, admission_id, faq_limit);
 
-            Console.WriteLine($"------------------------------------------------------------");
-            // Список специальностей
-            await Show_Specialties_List_Asyncs(connection);
+            // Console.WriteLine($"------------------------------------------------------------");
+            // // Список специальностей
+            // await Show_Specialties_List_Asyncs(connection);
 
-            Console.WriteLine($"------------------------------------------------------------");
-            // Карточка специальности
-            int? specialtyId = 1;
-            await Show_All_Specializations_Async(connection, specialtyId);
-            // await Show_All_Specializations_Async(connection, null); // Для отладки - Не найдено описание специальности.
+            // Console.WriteLine($"------------------------------------------------------------");
+            // // Карточка специальности
+            // int? specialtyId = 2;
+            // await Show_All_Specializations_Async(connection, specialtyId);
+            // // await Show_All_Specializations_Async(connection, null); // Для отладки - Не найдено описание специальности.
 
-            Console.WriteLine($"------------------------------------------------------------");
-            // Сроки и правила перевода
-            int? specialty_id = null; // Раздел по-умолчанию
-            // int? specialty_id = 1; // Раздел для отладки
-            // int? specialty_id = -1; // Раздел для отладки
-            await Show_Transfer_Page_Content_Asyncs(connection, specialty_id);
+            // Console.WriteLine($"------------------------------------------------------------");
+            // // Сроки и правила перевода
+            // int? specialty_id = null; // Раздел по-умолчанию
+            // // int? specialty_id = 1; // Раздел для отладки
+            // // int? specialty_id = -1; // Раздел для отладки
+            // await Show_Transfer_Page_Content_Asyncs(connection, specialty_id);
 
-        }
-        catch (NpgsqlException dbEx)
-        {
-            Console.WriteLine($"Ошибка базы данных: {dbEx.Message}");
-            // Console.WriteLine($"Детали: {dbEx.InnerException?.Message}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Общая ошибка: {ex.Message}");
-        }
+            // Console.WriteLine($"------------------------------------------------------------");
+            // // Сроки обучения
+            // await Show_basic_education_Asyncs(connection);
+            
+            // Console.WriteLine($"------------------------------------------------------------");
+            // // Прием иностранных граждан
+            // await Show_Reception_foreign_citizens_Asyncs(connection);
+            
+            // Console.WriteLine($"------------------------------------------------------------");
+            // // Сотрудничество с ВУЗами
+            // await Show_Cooperation_with_universities_Asyncs(connection);
+            
+            // Console.WriteLine($"------------------------------------------------------------");
+            // // Целево обучение (4 ссылки на изображение)
+            // // var botClient = ?;
+            // // var chatId = ?
+            // // await Show_Target_Education_Asyncs(connection, botClient, chatId);
+
+        // }
+        // catch (NpgsqlException dbEx)
+        // {
+        //     Console.WriteLine($"Ошибка базы данных: {dbEx.Message}");
+        //     // Console.WriteLine($"Детали: {dbEx.InnerException?.Message}");
+        // }
+        // catch (Exception ex)
+        // {
+        //     Console.WriteLine($"Общая ошибка: {ex.Message}");
+        // }
     } // MAIN
 
     // -----------------------------------------------------
@@ -313,8 +331,8 @@ class Program
             foreach (var row in rows)
             {
                 string title = row.title?.ToString() ?? "Раздел не определен";
-                string body = row.body?.ToString() ?? row.body_empty?.ToString();
-                body = body.Replace("\\n", "\n"); // Заменяем \n на реальный перевод строки
+                string body = row.body?.ToString() ?? row.body_empty?.ToString() ?? "Информация отсутствует";
+                body = body.Replace("\\n", "\n");
                 Console.WriteLine($"\n{title}:");
                 Console.WriteLine($"{body}");
             }
@@ -422,4 +440,179 @@ class Program
     }
 
 
+    // -----------------------------------------------------
+    // Раздел - Сроки обучения (базовом образовании)
+    static async Task Show_basic_education_Asyncs(NpgsqlConnection connection)
+    {   
+        // Получим информацию о правилах одной строкой
+        string sqlQuery = @"select be.education_info
+                            from basic_education be;";
+        
+        try
+        {
+            // Создаем команду с запросом
+            using (var command = new NpgsqlCommand(sqlQuery, connection))
+            {
+                // Выполняем запрос и получаем результат
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    // Проверяем, есть ли строки
+                    if (reader.HasRows)
+                    {
+                        Console.WriteLine("Информация о базовом образовании:\n");
+                        
+                        // Читаем все строки
+                        while (await reader.ReadAsync())
+                        {
+                            string educationInfo = reader.GetString(reader.GetOrdinal("education_info"));
+                            Console.WriteLine(educationInfo);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Информация о сроках базовом образовании.");
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка при выполнении запроса: {ex.Message}");
+        }
+    }
+
+
+    // -----------------------------------------------------
+    // Раздел - Прием иностранных граждан (Reception_foreign_citizens)
+    static async Task Show_Reception_foreign_citizens_Asyncs(NpgsqlConnection connection)
+    {
+        // Получим информацию о правилах одной строкой
+        string sqlQuery = @"select st.title, st.content
+                              from information_stat st
+                             where st.id = 1
+                             order by 1,2";
+        
+        try
+        {
+            using (var command = new NpgsqlCommand(sqlQuery, connection))
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                if (reader.HasRows && await reader.ReadAsync())
+                {
+                    string title = reader["title"]?.ToString() ?? "Прием иностранных граждан";
+                    string content = reader["content"]?.ToString() ?? "Информация временно недоступна";
+                    
+                    // Правильное использование переносов строк
+                    Console.WriteLine($"\n{title}");
+                    Console.WriteLine($"\n{content}");
+                }
+                else
+                {
+                    Console.WriteLine("\nИнформация о приеме иностранных граждан не найдена.\n");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"\nОшибка: {ex.Message}\n");
+        }
+    }
+
+
+    // -----------------------------------------------------
+    // Раздел - Сотрудничество с ВУЗами (Cooperation_with_universities)
+    static async Task Show_Cooperation_with_universities_Asyncs(NpgsqlConnection connection)
+    {
+        // Получим информацию о правилах одной строкой
+        string sqlQuery = @"select st.title, st.content
+                              from information_stat st
+                             where st.id = 2
+                             order by 1,2";
+        
+        try
+        {
+            using (var command = new NpgsqlCommand(sqlQuery, connection))
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                if (reader.HasRows && await reader.ReadAsync())
+                {
+                    string title = reader["title"]?.ToString() ?? "Сотрудничество с ВУЗами";
+                    string content = reader["content"]?.ToString() ?? "Информация временно недоступна";
+                    
+                    Console.WriteLine($"{title}\n");
+                    Console.WriteLine($"{content}\n");
+                }
+                else
+                {
+                    Console.WriteLine("\nИнформация о сотрудничестве с ВУЗами не найдена.\n");
+                    Console.WriteLine("Пожалуйста, обратитесь в отдел международных связей.\n");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"\nОшибка при получении информации: {ex.Message}\n");
+        }
+    }
+
+
+    // -----------------------------------------------------
+    // Раздел - Целевое обучение (с изображениями)
+    // static async Task Show_Target_Education_Asyncs(NpgsqlConnection connection, ITelegramBotClient botClient, long chatId)
+    // {
+    //     string sqlQuery = @"SELECT tem.id, tem.file_path, tem.display_order, ai.title, ai.content
+    //                         FROM Target_Education_Media tem
+    //                         JOIN admission_info ai ON tem.admission_id = ai.id
+    //                         WHERE tem.admission_id = 1
+    //                         ORDER BY tem.display_order";
+        
+    //     try
+    //     {
+    //         using (var command = new NpgsqlCommand(sqlQuery, connection))
+    //         using (var reader = await command.ExecuteReaderAsync())
+    //         {
+    //             if (reader.HasRows)
+    //             {
+    //                 // Отправляем текстовую информацию сначала
+    //                 if (await reader.ReadAsync())
+    //                 {
+    //                     string title = reader["title"]?.ToString() ?? "Целевое обучение";
+    //                     string content = reader["content"]?.ToString() ?? "";
+                        
+    //                     await botClient.SendTextMessageAsync(chatId, $"📚 {title}\n\n{content}");
+    //                 }
+                    
+    //                 // Отправляем изображения
+    //                 do
+    //                 {
+    //                     string imageUrl = reader["file_path"]?.ToString();
+    //                     int displayOrder = Convert.ToInt32(reader["display_order"]);
+                        
+    //                     if (!string.IsNullOrEmpty(imageUrl))
+    //                     {
+    //                         try
+    //                         {
+    //                             // Отправляем изображение по URL
+    //                             await botClient.SendPhotoAsync(chatId, InputFile.FromUri(imageUrl), 
+    //                                 caption: $"📸 Изображение {displayOrder}");
+    //                         }
+    //                         catch (Exception ex)
+    //                         {
+    //                             await botClient.SendTextMessageAsync(chatId, 
+    //                                 $"⚠️ Не удалось загрузить изображение {displayOrder}: {ex.Message}");
+    //                         }
+    //                     }
+    //                 } while (await reader.ReadAsync());
+    //             }
+    //             else
+    //             {
+    //                 await botClient.SendTextMessageAsync(chatId, "❌ Информация о целевом обучении не найдена.");
+    //             }
+    //         }
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         await botClient.SendTextMessageAsync(chatId, $"⚠️ Ошибка: {ex.Message}");
+    //     }
+    // }
 }
